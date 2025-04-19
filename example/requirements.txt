@@ -1,0 +1,6 @@
+fastapi_appattest
+fastapi
+uvicorn
+httpx
+python-jose
+pydantic-settings

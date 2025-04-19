@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    debug: bool = True
+    debug: bool = False
 
     apple_public_keys_url: str
     app_bundle_id: str

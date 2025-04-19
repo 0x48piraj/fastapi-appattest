@@ -3,8 +3,17 @@ name = "fastapi-appattest"
 version = "0.1.0"
 description = "FastAPI extension that provides App Attest support (secure, easy to use, and lightweight)"
 authors = [{ name = "Piyush Raj", email = "hello@piyushraj.org" }]
-dependencies = ["fastapi", "python-jose", "httpx"]
+dependencies = [
+    "fastapi",
+    "httpx",
+    "python-jose",
+    "pydantic-settings"
+]
 
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[project.urls]
+Homepage = "https://github.com/0x48piraj/fastapi-appattest"
+Documentation = "https://github.com/0x48piraj/fastapi-appattest#readme"
