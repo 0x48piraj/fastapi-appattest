@@ -3,7 +3,6 @@ import secrets
 import httpx
 from jose import jwt, JWTError
 from fastapi_appattest import settings
-from .config import APPLE_PUBLIC_KEYS_URL, APP_BUNDLE_ID, CHALLENGE_EXPIRY_SECONDS, JWT_SECRET, JWT_EXPIRY_SECONDS
 
 
 # In-memory challenge store (swap for Redis later)
@@ -26,7 +25,7 @@ def validate_challenge(challenge: str, device_id: str) -> bool:
     data = challenge_store.get(challenge)
     if not data:
         return False
-    if time.time() - data["timestamp"] > CHALLENGE_EXPIRY_SECONDS:
+    if time.time() - data["timestamp"] > settings.CHALLENGE_EXPIRY_SECONDS:
         challenge_store.pop(challenge, None)
         return False
     if data["device_id"] != device_id:
@@ -38,16 +37,17 @@ def issue_attested_session_token(device_id: str) -> str:
     payload = {
         "device_id": device_id,
         "iat": int(time.time()),
-        "exp": int(time.time()) + JWT_EXPIRY_SECONDS,
+        "exp": int(time.time()) + settings.JWT_EXPIRY_SECONDS,
         "type": "attested_session"
     }
-    return jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+    return jwt.encode(payload, settings.JWT_SECRET, algorithm="HS256")
 
 async def get_apple_public_keys():
     global _cached_keys, _last_fetched
     if time.time() - _last_fetched > 3600:
         async with httpx.AsyncClient() as client:
-            resp = await client.get(APPLE_PUBLIC_KEYS_URL)
+            resp = await client.get(settings.APPLE_PUBLIC_KEYS_URL)
+            resp.raise_for_status()  # raise if non-200 response
             _cached_keys = resp.json()
             _last_fetched = time.time()
     return _cached_keys.get("keys", [])
@@ -60,11 +60,11 @@ async def verify_attestation_token(token: str, expected_device_id: str, expected
                 token,
                 key,
                 algorithms=["ES256"],
-                audience=APP_BUNDLE_ID,
+                audience=settings.APP_BUNDLE_ID,
                 options={"verify_exp": True}
             )
 
-            if payload.get("app_id") != APP_BUNDLE_ID or \
+            if payload.get("app_id") != settings.APP_BUNDLE_ID or \
                payload.get("device_id") != expected_device_id or \
                payload.get("challenge") != expected_challenge:
                 raise ValueError("Invalid token payload")

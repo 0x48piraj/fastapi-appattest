@@ -14,6 +14,7 @@ from .fastapi_appattest import (
 )
 
 from .middleware import get_current_session
+from .middleware import router as appattest_router
 from .schema import AttestationRequest
 from .config import settings
 
@@ -23,6 +24,7 @@ __all__ = [
     "issue_attested_session_token",
     "validate_challenge",
     "get_current_session",
+    "appattest_router",
     "AttestationRequest",
     "settings",
     "__version__",

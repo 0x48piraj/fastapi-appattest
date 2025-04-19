@@ -1,8 +1,11 @@
 from fastapi import FastAPI, Depends
-from fastapi_appattest import get_current_session
+from fastapi_appattest import get_current_session, appattest_router
 
 
 app = FastAPI()
+
+# Register attestation endpoints
+app.include_router(appattest_router, prefix="/device")
 
 
 @app.get("/api/public-config")

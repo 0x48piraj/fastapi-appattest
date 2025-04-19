@@ -25,13 +25,13 @@ def get_current_session(authorization: str = Header(...)):
 
 router = APIRouter()
 
-@router.get("/auth/challenge")
+@router.get("/challenge")
 def get_challenge(device_id: str):
     if not device_id:
         raise HTTPException(status_code=400, detail="Missing device_id")
     return {"challenge": generate_client_challenge(device_id)}
 
-@router.post("/auth/attest")
+@router.post("/attest")
 async def attest(request: AttestationRequest):
     if not validate_challenge(request.challenge, request.device_id):
         raise HTTPException(status_code=400, detail="Invalid or expired challenge")
