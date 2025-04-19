@@ -1,8 +1,9 @@
 import time
 import secrets
 import httpx
+from fastapi import HTTPException, Header
 from jose import jwt, JWTError
-from fastapi_appattest import settings
+from .config import settings
 
 
 # In-memory challenge store (swap for Redis later)
@@ -76,3 +77,13 @@ async def verify_attestation_token(token: str, expected_device_id: str, expected
         except ValueError as ve:
             raise ve
     raise ValueError("Failed attestation validation")
+
+def get_current_session(authorization: str = Header(...)):
+    try:
+        token = authorization.replace("Bearer ", "")
+        payload = jwt.decode(token, settings.JWT_SECRET, algorithms=["HS256"])
+        if payload.get("type") != "attested_session":
+            raise HTTPException(status_code=403, detail="Invalid session type")
+        return payload
+    except JWTError:
+        raise HTTPException(status_code=403, detail="Invalid or expired session token")

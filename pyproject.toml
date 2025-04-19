@@ -14,6 +14,22 @@ dependencies = [
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.poetry]
+name = "fastapi-appattest"
+version = "0.1.0"
+description = "FastAPI extension that provides App Attest support (secure, easy to use, and lightweight)"
+authors = ["Piyush Raj <hello@piyushraj.org>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+fastapi = "^0.75"
+python-jose = "^3.3"
+httpx = "^0.21"
+pydantic = "^1.8"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2"
+
 [project.urls]
 Homepage = "https://github.com/0x48piraj/fastapi-appattest"
 Documentation = "https://github.com/0x48piraj/fastapi-appattest#readme"
