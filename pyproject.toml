@@ -6,9 +6,9 @@ authors = ["Piyush Raj <hello@piyushraj.org>"]
 license = "MIT"
 readme = "README.md"
 packages = [{ include = "fastapi_appattest" }]
-homepage = "https://github.com/yourusername/fastapi-appattest"
-repository = "https://github.com/yourusername/fastapi-appattest"
-keywords = ["fastapi", "api", "apple", "security", "ios", "attestation"]
+homepage = "https://github.com/0x48piraj/fastapi-appattest"
+repository = "https://github.com/0x48piraj/fastapi-appattest"
+keywords = ["fastapi", "api", "security", "Apple", "iOS", "device-attestation"]
 classifiers = [
     "Framework :: FastAPI",
     "Programming Language :: Python :: 3",

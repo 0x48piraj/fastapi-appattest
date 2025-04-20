@@ -102,6 +102,53 @@ To prevent replay attacks:
 - Include short-lived challenges in high-risk endpoints
 - Log and monitor assertion usage patterns
 
+## Gotchas & Things to Watch Out For
+
+Implementing device attestation securely means avoiding subtle mistakes that could weaken the protection. Here's what to watch for:
+
+### Challenge Reuse
+- **Challenge tokens are one-time-use** by design.  
+- If a challenge is reused, it will be rejected — this protects against replay attacks.
+- Clients should always request a fresh challenge before initiating attestation.
+
+> ✅ *Tip: Cache the challenge only long enough to complete the attestation handshake (e.g., 5 minutes).*
+
+### Device ID Consistency
+- The `device_id` must remain **stable and unique** for each iOS device.
+- If you're using something like `identifierForVendor` (IDFV), make sure it's consistent across app sessions.
+
+> ⚠️ If your `device_id` changes, the challenge/session verification will fail.
+
+### JWT Secrets
+- JWTs are signed with a secret (`JWT_SECRET`) — **keep this safe**.
+- If compromised, attackers could forge session tokens.
+
+> 🔄 Rotate secrets periodically and invalidate old tokens if a breach is suspected.
+
+### Session Expiry
+- JWT session tokens **expire after a set duration**.
+- Clients must be ready to re-attest if the session is no longer valid.
+
+> 💡 You can optionally implement a refresh mechanism or ask clients to repeat the attestation.
+
+### Attestation Token Verification
+- Apple’s attestation tokens are signed with **ES256**, not HS256 — use the correct algorithm.
+- You **must verify** against Apple’s **official public key endpoint**.
+
+> ⚠️ Avoid hardcoding public keys. Use the built-in key fetcher, which caches them efficiently.
+
+### Clean Up Challenge Store
+- If you're using the in-memory challenge store, expired challenges should be cleaned up regularly to avoid memory bloat.
+- In production, consider switching to Redis with TTL support for automatic expiry.
+
+### CORS & Headers
+- Don’t forget to configure CORS if your mobile app and API are on different origins.
+- Clients must include the `Authorization: Bearer <token>` header in each secured request.
+
+### Emulator Detection ≠ App Attest
+- App Attest ensures the app is **genuine** and **untampered**, but doesn’t directly block emulators.
+- Combine with other techniques (e.g., jailbreak detection) if needed.
+
 ## References
 
 - [Establishing your app’s integrity | Apple Developer Documentation](https://developer.apple.com/documentation/devicecheck/establishing-your-app-s-integrity)
