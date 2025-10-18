@@ -2,13 +2,13 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    debug: bool = False
+    DEBUG: bool = False
 
-    apple_public_keys_url: str
-    app_bundle_id: str
-    challenge_expiry_seconds: int
-    jwt_secret: str
-    jwt_expiry_seconds: int
+    APPLE_PUBLIC_KEYS_URL: str
+    APPLE_BUNDLE_ID: str
+    CHALLENGE_EXPIRY_SECONDS: int
+    JWT_SECRET: str
+    JWT_EXPIRY_SECONDS: int
 
     class Config:
         env_file = ".env"
